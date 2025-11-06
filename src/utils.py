@@ -17,5 +17,3 @@ def softmax(z: np.ndarray) -> np.ndarray:
         res = e_z / e_z.sum(azis=1, keepdims=True)
         
     return res
-
-print(softmax(np.array([1.0, 2.0, 3.0])))
