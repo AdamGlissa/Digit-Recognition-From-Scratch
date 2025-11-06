@@ -26,9 +26,7 @@ class Layer:
     def _initialize_parameters(self):
         limit = np.sqrt(6.0 / (self.input_size + self.output_size))
         self.weights = np.random.uniform(-limit, limit, size=(self.input_size, self.output_size))
-        print(self.weights)
 
         self.biases = np.zeros((self.input_size, self.output_size))
-        print(self.biases)
 
 firstLayer = Layer(7,8)
