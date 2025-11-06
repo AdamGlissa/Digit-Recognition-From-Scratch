@@ -7,9 +7,7 @@ def load_and_prepare_data():
 
     digits = load_digits()
     X = digits.data
-    print(f"Data shape: {X.shape}")
     y = digits.target
-    print(f"Target shape: {y.shape}")
 
     print(f"\n=== Dataset Information ===")
     print(f"Dataset : {X.shape[0]} images of {X.shape[1]} pixels each")
