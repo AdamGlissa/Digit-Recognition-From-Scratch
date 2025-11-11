@@ -38,25 +38,25 @@ class Layer:
         Perform the forward pass through the layer
 
         Args:
-            X (np.ndarray): Input data of shape (num_samples, input_size)
+            X (np.ndarray): Input data of shape (m, input_size)
 
         Returns:
-            np.ndarray: Output data of shape (num_samples, output_size)
+            np.ndarray: Output data of shape (m, output_size)
         """
         self.input_cache = X
-        output = np.dot(X, self.weights) + self.biases
-        return output
+        Z = np.dot(X, self.weights) + self.biases
+        return Z
 
     def backward(self, dz: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Perform the backward pass through the layer
 
         Args:
-            dz (np.ndarray): Gradient of the loss with respect to the output of the layer, shape (num_samples, output_size)
+            dz (np.ndarray): Gradient of the loss with respect to the output of the layer, shape (m, output_size)
 
         Returns:
             Tuple[np.ndarray, np.ndarray, np.ndarray]: 
-                - Gradient with respect to input data, shape (num_samples, input_size)
+                - Gradient with respect to input data, shape (m, input_size)
                 - Gradient with respect to weights, shape (input_size, output_size)
                 - Gradient with respect to biases, shape (1, output_size)
         """
@@ -65,12 +65,17 @@ class Layer:
 
         m = X.shape[0]  # Number of samples
 
-        dw = np.dot(self.input_cache.T, dz) / num_samples
-        assert dW.shape == self.weights.shape, \ 
-        f"dW shape {dW.shape} != W shape {self.weights.shape}
+        dw = (X.T @ dz) * (1 / m)
+        assert dw.shape == self.weights.shape, \
+        f"dw shape {dw.shape} != W shape {self.weights.shape}"
 
-        db = np.sum(dz, axis=0, keepdims=True) / num_samples
-        dx = np.dot(dz, self.weights.T)
+        db = np.sum(dz, axis=0, keepdims=True) * (1 / m)
+        assert db.shape == self.biases.shape, \
+        f"db shape {db.shape} != b shape {self.biases.shape}"
+
+        dx = dz @ self.weights.T
+        assert dx.shape == X.shape, \
+        f"dx shape {dx.shape} != X shape {X.shape}"
 
         return dx, dw, db
      

@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Dict
-from src.layer import Layer
-from src.utils import relu, relu_derivative, softmax
+from layer import Layer
+from utils import relu, relu_derivative, softmax
 
 class NeuralNetwork:
     
