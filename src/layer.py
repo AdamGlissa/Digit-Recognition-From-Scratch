@@ -14,7 +14,6 @@ class Layer:
     """
 
     def __init__(self, input_size: int, output_size: int, random_seed: int = 42):
-        np.random.seed(random_seed)
         self.input_size = input_size
         self.output_size = output_size
 
@@ -28,10 +27,8 @@ class Layer:
     def _initialize_parameters(self):
         limit = np.sqrt(6.0 / (self.input_size + self.output_size))
         self.weights = np.random.uniform(-limit, limit, size=(self.input_size, self.output_size))
-        print(self.weights)
 
-        self.biases = np.zeros((self.input_size, self.output_size))
-        print(self.biases)
+        self.biases = np.zeros((1, self.output_size))
 
     def forward(self, X : np.ndarray) -> np.ndarray: 
         """
@@ -90,11 +87,6 @@ class Layer:
         """
         self.weights -= learning_rate * dw
         self.biases -= learning_rate * db
-
-    
-
-a = Layer(3,5)
-
 
 
 

@@ -31,6 +31,4 @@ def load_and_prepare_data():
     print(f"Validation set: {X_val.shape[0]} samples")
     print(f"Test set: {X_test.shape[0]} samples")
     
-    return X_train, y_train, X_val, y_val, X_test, y_test
-
-load_and_prepare_data()     
+    return X_train, y_train, X_val, y_val, X_test, y_test   

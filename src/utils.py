@@ -24,6 +24,7 @@ def softmax_derivative(softmax_output: np.ndarray) -> np.ndarray:
 def sigmoid(z: np.ndarray) -> np.ndarray:
     return 1 / (1 + np.exp(-z))
 
-def sigmoid_derivative(sigm_output: np.ndarray) -> np.ndarray:
-    return sigm_output * (1 - sigm_output)
+def sigmoid_derivative(z: np.ndarray) -> np.ndarray:
+    s = sigmoid(z)
+    return s * (1 - s)
 
