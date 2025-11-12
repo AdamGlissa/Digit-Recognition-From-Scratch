@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Dict
 from layer import Layer
-from utils import relu, relu_derivative, softmax
+from utils import relu, relu_derivative, sigmoid, sigmoid_derivative
 
 class NeuralNetwork:
     
@@ -38,6 +38,181 @@ class NeuralNetwork:
         self.z_values.append(
             self.layers[-1].forward(self.activations[-1])
             )
-        output = softmax(self.z_values[-1])
         
-        return output
+        return sigmoid(self.z_values[-1])
+    
+    def compute_loss(self, Y_pred: np.ndarray, Y_true: np.ndarray) -> float:
+        m = Y_true.shape[0]
+
+        squarred_error = np.sum((Y_pred - Y_true) ** 2)
+        loss = (1 / 2 ) * ( 1 / m ) * squarred_error
+
+        return loss
+    
+    def backward_propagation(self, X: np.ndarray, Y: np.ndarray) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+        """
+        Perform backward propagation through the network
+        
+        Args:
+            X (np.ndarray): Input data of shape (m, input_size)
+            Y (np.ndarray): True labels of shape (m, 10) (one-hot encoded)
+
+        Returns:
+            Tuple[List[np.ndarray], List[np.ndarray]]: 
+                - List of gradients with respect to weights for each layer
+                - List of gradients with respect to biases for each layer
+        """
+        
+        m = X.shape[0]
+
+        gradients_W = []
+        gradients_B = []
+
+        # Gradient de la couche de sortie 
+
+        Y_pred = self.activations[-1]
+        dz = (Y_pred - Y) * sigmoid_derivative(self.z_values[-1])
+
+        # Gradients de la boucle de rétropropagation
+
+        for i in reversed(range(len(self.layers))):
+            # Récupérer l'activation de la couche précédente
+            if i == 0:
+                prev_activation = X
+            else:
+                prev_activation = self.activations[i-1]
+
+            dX, dW, dB = self.layers[i].backward(dz)
+
+            gradients_W.insert(0, dW)
+            gradients_B.insert(0, dB)
+
+            if i > 0:
+                Z_prev = self.z_values[i-1]
+                dz = dX * relu_derivative(Z_prev)
+
+        return gradients_W, gradients_B
+    
+    def update_parameters(self, gradients_W: List[np.ndarray], gradients_B: List[np.ndarray]):
+        for i, layer in enumerate(self.layers):
+            layer.update_parameters(gradients_W[i], gradients_B[i], self.learning_rate)
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        Y_pred = self.forward_propagation(X)
+        predictions = np.argmax(Y_pred, axis=1)
+        return predictions
+    
+    def train(self, X_train: np.ndarray, Y_train: np.ndarray,
+              epochs: int = 1000, batch_size: int = 32, 
+               X_val: np.darray = None, y_val: np.darray = None ) -> dict
+    
+        """
+        Train the neural network using mini-batch gradient descent
+        
+        Args:
+            X_train (np.ndarray): Training input data of shape (m, input_size)
+            Y_train (np.ndarray): Training true labels of shape (m, 10) (one-hot encoded)
+            epochs (int): Number of epochs to train
+            batch_size (int): Size of each mini-batch
+            X_val (np.ndarray, optional): Validation input data
+            y_val (np.ndarray, optional): Validation true labels
+            
+        Returns:
+            dict: Training history containing loss values
+        """
+
+        # Initialize history
+
+        history = {
+            "train_loss": [],
+            "val_loss": [],
+            "val_accuracy": []
+        }
+
+        # Number of training samples
+
+        m = X_train.shape[0]
+
+        n_batches = int(np.ceil(m / batch_size))
+
+        print(f"=== Début de l'entraînement ===")
+        print(f"Exemples d'entraînement: {m}")
+        print(f"Batch size: {batch_size}")
+        print(f"Batches par epoch: {n_batches}")
+        print(f"Epochs: {epochs}")
+        print(f"Learning rate: {self.learning_rate}\n")
+
+        # TRAINING LOOP 
+
+        for epoch in range(epochs):
+            
+            indices = np.arange(m)
+            np.random.shuffle(indices)
+
+            X_train_shuffled = X_train[indices]
+            y_train_shuffled = Y_train[indices]
+
+            epoch_loss = 0 
+
+            for batch_idx in range(n_batches):
+                start_idx = batch_idx * batch_size
+                end_idx = min(start_idx + batch_size, m)
+
+
+
+            permuted_indices = np.random.permutation(m)
+            X_shuffled = X_train[permuted_indices]
+            Y_shuffled = Y_train[permuted_indices]
+
+            epoch_loss = 0
+
+            for batch_idx in range(n_batches):
+                start = batch_idx * batch_size
+                end = min(start + batch_size, m)
+
+                X_batch = X_shuffled[start:end]
+                Y_batch = Y_shuffled[start:end]
+
+                Y_pred = self.forward_propagation(X_batch)
+                loss = self.compute_loss(Y_pred, Y_batch)
+                epoch_loss += loss
+
+                gradients_W, gradients_B = self.backward_propagation(X_batch, Y_batch)
+                self.update_parameters(gradients_W, gradients_B)
+
+            avg_epoch_loss = epoch_loss / n_batches
+            history["train_loss"].append(avg_epoch_loss)
+
+            if X_val is not None and y_val is not None:
+                Y_val_pred = self.forward_propagation(X_val)
+                val_loss = self.compute_loss(Y_val_pred, y_val)
+                history["val_loss"].append(val_loss)
+
+                val_predictions = np.argmax(Y_val_pred, axis=1)
+                val_true = np.argmax(y_val, axis=1)
+                val_accuracy = np.mean(val_predictions == val_true)
+                history["val_accuracy"].append(val_accuracy)
+
+                print(f"Epoch {epoch+1}/{epochs} - Train Loss: {avg_epoch_loss:.4f} - Val Loss: {val_loss:.4f} - Val Accuracy: {val_accuracy:.4f}")
+            else:
+                print(f"Epoch {epoch+1}/{epochs} - Train Loss: {avg_epoch_loss:.4f}")
+
+
+
+
+
+        losses = []
+        for epoch in range(epochs):
+            Y_pred = self.forward_propagation(X_train)
+            loss = self.compute_loss(Y_pred, Y_train)
+            losses.append(loss)
+
+            gradients_W, gradients_B = self.backward_propagation(X_train, Y_train)
+            self.update_parameters(gradients_W, gradients_B)
+
+            if epoch % 100 == 0:
+                print(f"Epoch {epoch}, Loss: {loss}")
+
+        return losses
+    
+

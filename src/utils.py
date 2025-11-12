@@ -16,3 +16,14 @@ def softmax(z: np.ndarray) -> np.ndarray:
         res = e_z / e_z.sum(azis=1, keepdims=True)
         
     return res
+
+def softmax_derivative(softmax_output: np.ndarray) -> np.ndarray:
+    s = softmax_output.reshape(-1,1)
+    return np.diagflat(s) - np.dot(s, s.T)
+
+def sigmoid(z: np.ndarray) -> np.ndarray:
+    return 1 / (1 + np.exp(-z))
+
+def sigmoid_derivative(sigm_output: np.ndarray) -> np.ndarray:
+    return sigm_output * (1 - sigm_output)
+
