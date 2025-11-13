@@ -25,7 +25,7 @@ class Layer:
         self.input_cache = None # Pour la rétropropagation 
 
     def _initialize_parameters(self):
-        limit = np.sqrt(6.0 / (self.input_size + self.output_size))
+        limit = np.sqrt(6.0 / self.input_size )
         self.weights = np.random.uniform(-limit, limit, size=(self.input_size, self.output_size))
 
         self.biases = np.zeros((1, self.output_size))
