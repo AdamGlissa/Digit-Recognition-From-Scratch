@@ -126,8 +126,8 @@ def main():
 
     # Hyperparamètres
     architecture = [64, 128, 64, 10]
-    learning_rate = 0.01
-    epochs = 100 
+    learning_rate = 0.05
+    epochs = 500
     batch_size = 32
     random_seed = 42
 

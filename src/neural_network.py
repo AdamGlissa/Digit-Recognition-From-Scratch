@@ -163,6 +163,7 @@ class NeuralNetwork:
         # =============================================
         #                TRAINING LOOP 
         # =============================================
+        
 
         for epoch in range(epochs):
             
