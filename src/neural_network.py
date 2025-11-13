@@ -21,12 +21,16 @@ class NeuralNetwork:
         self.z_values = []
     
     def forward_propagation(self, X: np.ndarray) -> np.ndarray:
-        self.z_values.append(
-            self.layers[0].forward(X)
-            )
-        self.activations.append(
-            relu(self.z_values[-1])
-            )
+        self.activations = []
+        self.z_values = []
+
+        # Clear caches for a fresh forward pass
+        self.z_values = []
+        self.activations = []
+
+        # First hidden layer
+        self.z_values.append(self.layers[0].forward(X))
+        self.activations.append(relu(self.z_values[-1]))
         for layer in self.layers[1:-1]:
             self.z_values.append(
                 layer.forward(self.activations[-1])
@@ -35,11 +39,12 @@ class NeuralNetwork:
                 relu(self.z_values[-1])
                 )
         
-        self.z_values.append(
-            self.layers[-1].forward(self.activations[-1])
-            )
-        
-        return sigmoid(self.z_values[-1])
+        # Output layer
+        self.z_values.append(self.layers[-1].forward(self.activations[-1]))
+        y_final = sigmoid(self.z_values[-1])
+        # store final activation for backward pass
+        self.activations.append(y_final)
+        return y_final
     
     def compute_loss(self, Y_pred: np.ndarray, Y_true: np.ndarray) -> float:
         m = Y_true.shape[0]
@@ -97,9 +102,22 @@ class NeuralNetwork:
         for i, layer in enumerate(self.layers):
             layer.update_parameters(gradients_W[i], gradients_B[i], self.learning_rate)
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, X: np.ndarray, return_probs: bool = False):
+        """
+        Make predictions for input X.
+
+        Args:
+            X (np.ndarray): Input data of shape (m, input_size)
+            return_probs (bool): If True, also return the probability matrix (soft outputs).
+
+        Returns:
+            If return_probs is False: array of predicted class indices (m,)
+            If return_probs is True: (preds, probs) where probs has shape (m, n_classes)
+        """
         Y_pred = self.forward_propagation(X)
         predictions = np.argmax(Y_pred, axis=1)
+        if return_probs:
+            return predictions, Y_pred
         return predictions
     
     def train(self, X_train: np.ndarray, Y_train: np.ndarray,

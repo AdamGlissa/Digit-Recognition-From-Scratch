@@ -17,12 +17,12 @@ def plot_training_history(history: dict, save_path='training_history.png'):
 
     # Plot de la loss
     axes[0].plot(epochs, history['train_loss'], 
-                label='Train Loss', linewidth=2, marker='o', markersize=3)
+                label='Train loss', linewidth=2, marker='o', markersize=3)
     axes[0].plot(epochs, history['val_loss'], 
                 label='Validation Loss', linewidth=2, marker='s', markersize=3)
     axes[0].set_xlabel('Epoch', fontsize=12)
-    axes[0].set_ylabel('Loss', fontsize=12)
-    axes[0].set_title('Évolution de la Loss pendant l\'entraînement', 
+    axes[0].set_ylabel('Perte', fontsize=12)
+    axes[0].set_title('Évolution de la perte pendant l\'entraînement', 
                      fontsize=14, fontweight='bold')
     axes[0].legend(fontsize=11)
     axes[0].grid(True, alpha=0.3)
@@ -31,7 +31,7 @@ def plot_training_history(history: dict, save_path='training_history.png'):
     min_val_loss_epoch = np.argmin(history['val_loss']) + 1
     min_val_loss = np.min(history['val_loss'])
     axes[0].axvline(x=min_val_loss_epoch, color='red', linestyle='--', 
-                   alpha=0.5, label=f'Best Val Loss (Epoch {min_val_loss_epoch})')
+                   alpha=0.5, label=f'Best Validation Loss (Epoch {min_val_loss_epoch})')
     axes[0].legend(fontsize=11)
 
     # Graphique 2 : Accuracy
@@ -39,8 +39,8 @@ def plot_training_history(history: dict, save_path='training_history.png'):
                 label='Validation Accuracy', linewidth=2, 
                 marker='o', markersize=3, color='green')
     axes[1].set_xlabel('Epoch', fontsize=12)
-    axes[1].set_ylabel('Accuracy', fontsize=12)
-    axes[1].set_title('Évolution de l\'Accuracy sur la Validation', 
+    axes[1].set_ylabel('Precision', fontsize=12)
+    axes[1].set_title('Évolution de la précision sur le set de validation', 
                      fontsize=14, fontweight='bold')
     axes[1].legend(fontsize=11)
     axes[1].grid(True, alpha=0.3)
@@ -49,7 +49,7 @@ def plot_training_history(history: dict, save_path='training_history.png'):
     max_val_acc_epoch = np.argmax(history['val_accuracy']) + 1
     max_val_acc = np.max(history['val_accuracy'])
     axes[1].axvline(x=max_val_acc_epoch, color='red', linestyle='--', 
-                   alpha=0.5, label=f'Best Val Acc (Epoch {max_val_acc_epoch})')
+                   alpha=0.5, label=f'Best Validation Accuracy (Epoch {max_val_acc_epoch})')
     axes[1].axhline(y=max_val_acc, color='blue', linestyle=':', 
                    alpha=0.3, label=f'Max: {max_val_acc:.2%}')
     axes[1].legend(fontsize=11)
