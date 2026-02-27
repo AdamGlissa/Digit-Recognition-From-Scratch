@@ -3,13 +3,12 @@ import matplotlib.pyplot as plt
 import sys
 import os
 from datetime import datetime
+from src.models.neural_network import NeuralNetwork
+from src.data.data_loader import load_and_prepare_data
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.neural_network import NeuralNetwork
-from src.data_loader import load_and_prepare_data
-
-def plot_training_history(history: dict, save_path='training_history.png'):
+def plot_training_history(history: dict, save_path='results/training_history.png'):
 
     fig, axes = plt.subplots(2, 1, figsize=(15, 5))
 
@@ -56,7 +55,7 @@ def plot_training_history(history: dict, save_path='training_history.png'):
     
     plt.tight_layout()
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    print(f"\n📊 Graphique sauvegardé : {save_path}")
+    print(f"\nGraphique sauvegardé : {save_path}")
     plt.show()
 
 def print_training_summary(history: dict):
@@ -106,7 +105,7 @@ def save_model_weights(nn: NeuralNetwork, filename='model_weights.npz'):
         weights_dict[f'b{i}'] = layer.biases
 
     np.savez(filename, **weights_dict)
-    print(f"\n💾 Poids du modèle sauvegardés dans : {filename}")
+    print(f"\nPoids du modèle sauvegardés dans : {filename}")
 
 def main():
     # Charger les données
@@ -197,13 +196,13 @@ def main():
     # Sauvegarde 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    weights_filename = f'model_weights_{timestamp}.npz'
+    weights_filename = f'models/model_weights_{timestamp}.npz'
     save_model_weights(nn, filename=weights_filename)
 
-    plot_filename = f'training_history_{timestamp}.png'
+    plot_filename = f'results/training_history_{timestamp}.png'
     plot_training_history(history, save_path=plot_filename)
 
-    history_filename = f'training_history_{timestamp}.npz'
+    history_filename = f'results/training_history_{timestamp}.npz'
     np.savez(history_filename,
              train_loss=history["train_loss"],
                 val_loss=history["val_loss"],
@@ -212,7 +211,7 @@ def main():
                 val_acc=val_acc,
                 test_acc=test_acc)
 
-    print(f"\n📂 Historique d'entraînement sauvegardé dans : {history_filename}")
+    print(f"\nHistorique d'entraînement sauvegardé dans : {history_filename}")
 
     print("\n=== Fin de l'entraînement ===\n")
 

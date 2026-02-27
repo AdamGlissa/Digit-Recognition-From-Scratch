@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Dict
 from .layer import Layer
-from .utils import relu, relu_derivative, sigmoid, sigmoid_derivative
+from ..utils.math_funtions import relu, relu_derivative, sigmoid, sigmoid_derivative
 
 class NeuralNetwork:
     

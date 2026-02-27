@@ -9,12 +9,13 @@ import sys
 import os
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
+from src.models.neural_network import NeuralNetwork
+from src.data.data_loader import load_and_prepare_data
 
 # Ajouter le dossier parent au path pour les imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.neural_network import NeuralNetwork
-from src.data_loader import load_and_prepare_data
+
 
 
 def load_model_weights(nn, filename):
