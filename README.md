@@ -1,12 +1,12 @@
 # Digit Recognition From Scratch
 
-A fully connected neural network for handwritten digit classification, implemented **from scratch in pure NumPy** — no PyTorch, no TensorFlow, no autograd. Every component (dense layers, forward/backward propagation, gradient descent, loss functions) is hand-derived and hand-coded to demonstrate a solid understanding of the mathematics behind deep learning.
+A fully connected neural network for handwritten digit classification, implemented **from scratch in pure NumPy** - no PyTorch, TensorFlow, or autograd. Every component (dense layers, forward/backward propagation, gradient descent, loss functions) is hand-derived and hand-coded to demonstrate a solid understanding of the mathematics behind deep learning.
 
 Trained on the [`scikit-learn` `load_digits`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html) dataset (1,797 8x8 grayscale images of digits 0-9), the model reaches **98.5% test accuracy**.
 
 ## Why this project
 
-Frameworks like PyTorch or TensorFlow abstract away the backpropagation math. This project intentionally avoids them to prove the underlying concepts are fully understood: matrix-based forward propagation, the chain rule applied layer by layer during backpropagation, gradient computation, and parameter updates via mini-batch gradient descent — all implemented manually with NumPy.
+Frameworks like PyTorch or TensorFlow abstract away the backpropagation math. This project intentionally avoids them to prove the underlying concepts are fully understood: matrix-based forward propagation, the chain rule applied layer by layer during backpropagation, gradient computation, and parameter updates via mini-batch gradient descent - all implemented manually with NumPy.
 
 ## Results
 
@@ -26,7 +26,7 @@ Global accuracy hides more than it reveals. The evaluation suite breaks the mode
 
 ![Confusion matrix](results/confusion_matrix.png)
 
-On the 270 test images the model makes **4 errors**, and they are not randomly distributed — three of them are the same confusion:
+On the 270 test images the model makes **4 errors**, and they are not randomly distributed - three of them are the same confusion:
 
 | True | Predicted | Confidence in prediction | Confidence in true class |
 |---|---|---|---|
@@ -35,7 +35,7 @@ On the 270 test images the model makes **4 errors**, and they are not randomly d
 | 1 | 8 | 9.2% | 7.8% |
 | 9 | 7 | 41.9% | 31.4% |
 
-The **1 ↔ 8 pair accounts for 75% of all errors**. At 8x8 resolution a narrow `8` and a `1` drawn with a base serif collapse into nearly identical pixel patterns: the information needed to separate them is largely destroyed by the downsampling rather than missed by the network. This points to a data-resolution limit rather than an optimization failure — the remaining headroom lies in higher-resolution inputs or convolutional features, not in longer training.
+The **1 ↔ 8 pair accounts for 75% of all errors**. At 8x8 resolution a narrow `8` and a `1` drawn with a base serif collapse into nearly identical pixel patterns: the information needed to separate them is largely destroyed by the downsampling rather than missed by the network. This points to a data-resolution limit rather than an optimization failure - the remaining headroom lies in higher-resolution inputs or convolutional features, not in longer training.
 
 ![Worst predictions](results/worst_predictions.png)
 
@@ -56,7 +56,7 @@ A 40-point gap. Exploiting it by abstaining on low-confidence inputs yields a tu
 | ≥ 70% | 95.2% | 99.22% |
 | ≥ 90% | 89.3% | 99.59% |
 
-Rejecting the 10.7% least confident inputs raises accuracy from 98.52% to **99.59%** — the deferral strategy a production classifier would use to route ambiguous cases to a human reviewer. Only one error slips through with high confidence (92.4%), and it is one of the `8 → 1` cases.
+Rejecting the 10.7% least confident inputs raises accuracy from 98.52% to **99.59%** - the deferral strategy a production classifier would use to route ambiguous cases to a human reviewer. Only one error slips through with high confidence (92.4%), and it is one of the `8 → 1` cases.
 
 ## Architecture
 
@@ -153,13 +153,13 @@ This project is open source and available under the MIT License.
 
 # Reconnaissance de Chiffres From Scratch
 
-Un réseau de neurones entièrement connecté pour la classification de chiffres manuscrits, implémenté **entièrement en NumPy pur** — sans PyTorch, sans TensorFlow, sans autograd. Chaque composant (couches denses, propagation avant/arrière, descente de gradient, fonctions de perte) est dérivé mathématiquement et codé à la main pour démontrer une compréhension solide des mathématiques du deep learning.
+Un réseau de neurones entièrement connecté pour la classification de chiffres manuscrits, implémenté **entièrement en NumPy pur** - sans PyTorch, TensorFlow ou autograd. Chaque composant (couches denses, propagation avant/arrière, descente de gradient, fonctions de perte) est dérivé mathématiquement et codé à la main pour démontrer une compréhension solide des mathématiques du deep learning.
 
 Entraîné sur le jeu de données [`load_digits` de `scikit-learn`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html) (1 797 images 8x8 en niveaux de gris représentant les chiffres 0 à 9), le modèle atteint **98,5 % de précision sur le set de test**.
 
 ## Pourquoi ce projet
 
-Les frameworks comme PyTorch ou TensorFlow masquent les mathématiques de la rétropropagation. Ce projet les évite volontairement afin de prouver une maîtrise complète des concepts sous-jacents : propagation avant sous forme matricielle, application de la règle de dérivation en chaîne couche par couche lors de la rétropropagation, calcul des gradients, et mise à jour des paramètres via une descente de gradient par mini-lots — le tout implémenté manuellement avec NumPy.
+Les frameworks comme PyTorch ou TensorFlow masquent les mathématiques de la rétropropagation. Ce projet les évite volontairement afin de prouver une maîtrise complète des concepts sous-jacents : propagation avant sous forme matricielle, application de la règle de dérivation en chaîne couche par couche lors de la rétropropagation, calcul des gradients, et mise à jour des paramètres via une descente de gradient par mini-lots - le tout implémenté manuellement avec NumPy.
 
 ## Résultats
 
@@ -179,7 +179,7 @@ La précision globale cache plus qu'elle ne révèle. La suite d'évaluation dé
 
 ![Matrice de confusion](results/confusion_matrix.png)
 
-Sur les 270 images de test, le modèle commet **4 erreurs**, et elles ne sont pas distribuées au hasard — trois d'entre elles sont la même confusion :
+Sur les 270 images de test, le modèle commet **4 erreurs**, et elles ne sont pas distribuées au hasard - trois d'entre elles sont la même confusion :
 
 | Vrai | Prédit | Confiance dans la prédiction | Confiance dans la vraie classe |
 |---|---|---|---|
@@ -188,7 +188,7 @@ Sur les 270 images de test, le modèle commet **4 erreurs**, et elles ne sont pa
 | 1 | 8 | 9,2 % | 7,8 % |
 | 9 | 7 | 41,9 % | 31,4 % |
 
-La **paire 1 ↔ 8 représente 75 % des erreurs**. En résolution 8x8, un `8` étroit et un `1` tracé avec un empattement à la base se réduisent à des motifs de pixels quasi identiques : l'information nécessaire pour les distinguer est largement détruite par le sous-échantillonnage plutôt que manquée par le réseau. Cela traduit une limite de résolution des données et non un échec d'optimisation — la marge de progression restante se situe dans des entrées de plus haute résolution ou des features convolutives, pas dans un entraînement plus long.
+La **paire 1 ↔ 8 représente 75 % des erreurs**. En résolution 8x8, un `8` étroit et un `1` tracé avec un empattement à la base se réduisent à des motifs de pixels quasi identiques : l'information nécessaire pour les distinguer est largement détruite par le sous-échantillonnage plutôt que manquée par le réseau. Cela traduit une limite de résolution des données et non un échec d'optimisation - la marge de progression restante se situe dans des entrées de plus haute résolution ou des features convolutives, pas dans un entraînement plus long.
 
 ![Pires prédictions](results/worst_predictions.png)
 
@@ -209,7 +209,7 @@ Un écart de 40 points. L'exploiter en s'abstenant sur les entrées peu fiables 
 | ≥ 70 % | 95,2 % | 99,22 % |
 | ≥ 90 % | 89,3 % | 99,59 % |
 
-Rejeter les 10,7 % d'entrées les moins fiables fait passer la précision de 98,52 % à **99,59 %** — la stratégie de délégation qu'un classifieur en production utiliserait pour router les cas ambigus vers une relecture humaine. Une seule erreur passe au travers avec une confiance élevée (92,4 %), et il s'agit d'un des cas `8 → 1`.
+Rejeter les 10,7 % d'entrées les moins fiables fait passer la précision de 98,52 % à **99,59 %** - la stratégie de délégation qu'un classifieur en production utiliserait pour router les cas ambigus vers une relecture humaine. Une seule erreur passe au travers avec une confiance élevée (92,4 %), et il s'agit d'un des cas `8 → 1`.
 
 ## Architecture
 
