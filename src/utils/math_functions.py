@@ -12,8 +12,8 @@ def softmax(z: np.ndarray) -> np.ndarray:
         e_z = np.exp(z - np.max(z))
         res = e_z / e_z.sum()
     else:
-        e_z = np.exp(z - np.max(z, azis=1, keepdims=True))
-        res = e_z / e_z.sum(azis=1, keepdims=True)
+        e_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+        res = e_z / e_z.sum(axis=1, keepdims=True)
         
     return res
 

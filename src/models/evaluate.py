@@ -6,16 +6,17 @@ Script d'évaluation détaillée du réseau de neurones.
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-import os
+from pathlib import Path
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 from src.models.neural_network import NeuralNetwork
 from src.data.data_loader import load_and_prepare_data
 
-# Ajouter le dossier parent au path pour les imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
+# Racine du projet, déduite de l'emplacement de ce fichier (src/models/evaluate.py)
+# pour que le script fonctionne quel que soit le répertoire de travail courant.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+MODELS_DIR = PROJECT_ROOT / 'models'
+RESULTS_DIR = PROJECT_ROOT / 'results'
 
 
 def load_model_weights(nn, filename):
@@ -27,15 +28,26 @@ def load_model_weights(nn, filename):
         filename: Fichier .npz contenant les poids
     """
     data = np.load(filename)
-    
+
     for i, layer in enumerate(nn.layers):
-        layer.weights = data[f'W{i}']
-        layer.biases = data[f'b{i}']
-    
+        W, b = data[f'W{i}'], data[f'b{i}']
+        # Sans cette vérification, une architecture différente de celle utilisée à
+        # l'entraînement passerait silencieusement ici et échouerait plus loin dans
+        # un np.dot, avec une erreur de shape impossible à rattacher à sa cause.
+        if W.shape != layer.weights.shape or b.shape != layer.biases.shape:
+            raise ValueError(
+                f"Architecture incompatible à la couche {i} : "
+                f"le modèle attend W{layer.weights.shape} et b{layer.biases.shape}, "
+                f"le fichier contient W{W.shape} et b{b.shape}. "
+                f"Vérifiez que layer_sizes correspond à celui utilisé à l'entraînement."
+            )
+        layer.weights = W
+        layer.biases = b
+
     print(f"✅ Poids chargés depuis : {filename}")
 
 
-def plot_confusion_matrix(y_true, y_pred, class_names, save_path='confusion_matrix.png'):
+def plot_confusion_matrix(y_true, y_pred, class_names, save_path=RESULTS_DIR / 'confusion_matrix.png'):
     """
     Afficher et sauvegarder la matrice de confusion.
     
@@ -153,7 +165,7 @@ def find_worst_predictions(nn, X, y, n_examples=10):
     return worst_indices
 
 
-def visualize_predictions(nn, X, y, indices, save_path='worst_predictions.png'):
+def visualize_predictions(nn, X, y, indices, save_path=RESULTS_DIR / 'worst_predictions.png'):
     """
     Visualiser les prédictions sur des exemples spécifiques.
     
@@ -208,7 +220,7 @@ def visualize_predictions(nn, X, y, indices, save_path='worst_predictions.png'):
     plt.show()
 
 
-def analyze_confidence_distribution(nn, X, y, save_path='confidence_distribution.png'):
+def analyze_confidence_distribution(nn, X, y, save_path=RESULTS_DIR / 'confidence_distribution.png'):
     """
     Analyser la distribution des confiances de prédiction.
     
@@ -293,6 +305,8 @@ def main():
     # ========================================
     # ÉTAPE 1 : Charger les données
     # ========================================
+    RESULTS_DIR.mkdir(exist_ok=True)
+
     print("\n📁 Chargement des données...")
     X_train, y_train, X_val, y_val, X_test, y_test = load_and_prepare_data()
     
@@ -304,21 +318,20 @@ def main():
     print("\n🧠 Création du réseau de neurones...")
     nn = NeuralNetwork(
         layer_sizes=[64, 128, 64, 10],
-        learning_rate=0.01,
+        learning_rate=0.05,
         random_seed=42
     )
-    
-    # Chercher le fichier de poids le plus récent
-    import glob
-    weight_files = glob.glob('model_weights_*.npz')
-    
+
+    # Chercher le fichier de poids le plus récent dans models/
+    weight_files = list(MODELS_DIR.glob('model_weights_*.npz'))
+
     if weight_files:
-        latest_weights = max(weight_files, key=os.path.getctime)
+        latest_weights = max(weight_files, key=lambda p: p.stat().st_ctime)
         print(f"\n📥 Chargement des poids : {latest_weights}")
         load_model_weights(nn, latest_weights)
     else:
-        print("\n⚠️  Aucun fichier de poids trouvé.")
-        print("   Veuillez d'abord entraîner le modèle avec train.py")
+        print(f"\n⚠️  Aucun fichier de poids trouvé dans {MODELS_DIR}")
+        print("   Veuillez d'abord entraîner le modèle avec main.py")
         return
     
     # ========================================
@@ -373,7 +386,7 @@ def main():
     print("\n" + "="*60)
     print("✅ ÉVALUATION TERMINÉE")
     print("="*60)
-    print("\n📂 Fichiers générés :")
+    print(f"\n📂 Fichiers générés dans {RESULTS_DIR} :")
     print("   - confusion_matrix.png")
     print("   - confidence_distribution.png")
     print("   - worst_predictions.png (si erreurs trouvées)")
